@@ -1,54 +1,64 @@
 package com.zipcodewilmington.phonebook;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
+import java.util.stream.Collectors;
 //import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+
 
 /**
  * Created by leon on 1/23/18.
  * Made WAY better by kristofer 6/16/20
  */
 public class PhoneBook {
-
     private final Map<String, List<String>> phonebook;
 
     public PhoneBook(Map<String, List<String>> map) {
-        this.phonebook = null;
+        this.phonebook = map;
     }
 
     public PhoneBook() {
-        this(null);
+        this(new LinkedHashMap<>());
     }
 
     public void add(String name, String phoneNumber) {
+        phonebook.put(name, Collections.singletonList(phoneNumber));
     }
 
     public void addAll(String name, String... phoneNumbers) {
+        phonebook.put(name, new ArrayList<>(Arrays.asList(phoneNumbers)));
     }
 
     public void remove(String name) {
+        phonebook.remove(name);
     }
 
     public Boolean hasEntry(String name) {
-        return null;
+        return phonebook.containsKey(name);
+    }
+    public Boolean hasEntry(String name, String phoneNumber) {
+        return phonebook.containsKey(name) && phonebook.get(name).contains(phoneNumber);
     }
 
     public List<String> lookup(String name) {
-        return null;
+        return phonebook.get(name);
     }
 
     public String reverseLookup(String phoneNumber)  {
+        Map<List<String>, String> mapInverse =
+                phonebook.entrySet()
+                        .stream()
+                        .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+        for (List<String> numbers : mapInverse.keySet()) {
+            if (numbers.contains(phoneNumber)) return mapInverse.get(numbers);
+        }
         return null;
     }
 
     public List<String> getAllContactNames() {
-        return null;
+        return new ArrayList<>(phonebook.keySet());
     }
 
     public Map<String, List<String>> getMap() {
-        return null;
+        return phonebook;
     }
 }
